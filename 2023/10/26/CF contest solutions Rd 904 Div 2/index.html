@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="Ivan Li">
+
+
+
+
+
+<title>CF contest solutions Rd 904 Div 2 | Hexo</title>
+
+
+
+    <link rel="icon" href="../../../../favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="../../../../css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="../../../../js/script.js"></script>
+    
+    <script src="../../../../js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+            <!-- MathJax配置，可通过单美元符号书写行内公式等 -->
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+    "HTML-CSS": {
+        preferredFont: "TeX",
+        availableFonts: ["STIX","TeX"],
+        linebreaks: { automatic:true },
+        EqnChunk: (MathJax.Hub.Browser.isMobile ? 10 : 50)
+    },
+    tex2jax: {
+        inlineMath: [ ["$", "$"], ["\\(","\\)"] ],
+        processEscapes: true,
+        ignoreClass: "tex2jax_ignore|dno",
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+        equationNumbers: { autoNumber: "AMS" },
+        noUndefined: { attributes: { mathcolor: "red", mathbackground: "#FFEEEE", mathsize: "90%" } },
+        Macros: { href: "{}" }
+    },
+    messageStyle: "none"
+    });
+</script>
+<!-- 给MathJax元素添加has-jax class -->
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+<!-- 通过连接CDN加载MathJax的js代码 -->
+<script type="text/javascript" async
+        src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+
+
+        
+    
+
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+    <script>
+        // this function is used to check current theme before page loaded.
+        (() => {
+            const currentTheme = window.localStorage && window.localStorage.getItem('theme') || '';
+            const isDark = currentTheme === 'dark';
+            const pagebody = document.getElementsByTagName('body')[0]
+            if (isDark) {
+                pagebody.classList.add('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Dark"
+            } else {
+                pagebody.classList.remove('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Light"
+            }
+        })();
+    </script>
+
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">Ivan&#39;s Blog</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="../../../../archives">Posts</a>
+                
+                    <a class="menu-item" href="../../../../category">Categories</a>
+                
+                    <a class="menu-item" href="../../../../tag">Tags</a>
+                
+                    <a class="menu-item" href="../../../../about">About</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">Ivan&#39;s Blog</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="../../../../archives">Posts</a>
+                
+                    <a class="menu-item" href="../../../../category">Categories</a>
+                
+                    <a class="menu-item" href="../../../../tag">Tags</a>
+                
+                    <a class="menu-item" href="../../../../about">About</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+            <div class="main">
+                <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    var tocbot_timer;
+    var DEPTH_MAX = 6; // 为 6 时展开所有
+    var tocbot_default_config = {
+        tocSelector: '.tocbot-list',
+        contentSelector: '.post-content',
+        headingSelector: 'h1, h2, h3, h4, h5',
+        orderedList: false,
+        scrollSmooth: true,
+        onClick: extend_click,
+    };
+
+    function extend_click() {
+        clearTimeout(tocbot_timer);
+        tocbot_timer = setTimeout(function() {
+            tocbot.refresh(obj_merge(tocbot_default_config, {
+                hasInnerContainers: true
+            }));
+        }, 420); // 这个值是由 tocbot 源码里定义的 scrollSmoothDuration 得来的
+    }
+
+    document.ready(function() {
+        tocbot.init(obj_merge(tocbot_default_config, {
+            collapseDepth: 1
+        }));
+    });
+
+    function expand_toc() {
+        var b = document.querySelector('.tocbot-toc-expand');
+        var expanded = b.getAttribute('data-expanded');
+        expanded ? b.removeAttribute('data-expanded') : b.setAttribute('data-expanded', true);
+        tocbot.refresh(obj_merge(tocbot_default_config, {
+            collapseDepth: expanded ? 1 : DEPTH_MAX
+        }));
+        b.innerText = expanded ? 'Expand all' : 'Collapse all';
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+    function obj_merge(target, source) {
+        for (var item in source) {
+            if (source.hasOwnProperty(item)) {
+                target[item] = source[item];
+            }
+        }
+        return target;
+    }
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">CF contest solutions Rd 904 Div 2</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">Ivan Li</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">October 26, 2023&nbsp;&nbsp;10:30:12</a>
+                        </span>
+                    
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <p><img src="/2023/10/26/CF%20contest%20solutions%20Rd%20904%20Div%202/codeforces.png" alt="codeforces"></p>
+<p>The college ED application deadline is approaching…</p>
+<p>What better way is there than to do a CF contest purely for fun？ XD</p>
+<p>problems can be seen here –&gt; <a target="_blank" rel="noopener" href="https://codeforces.com/contest/1884">Dashboard - Codeforces Round 904 (Div. 2) - Codeforces</a></p>
+<h3 id="Problem-A-Simple-Design"><a href="#Problem-A-Simple-Design" class="headerlink" title="Problem A: Simple Design"></a>Problem A: Simple Design</h3><p>find the minimum integer <strong>bigger than x</strong> and <strong>the sum of all its digits</strong> is divisible by k</p>
+<p>Noting that the sum of all digits is always changing, and will roughly cover every value equally. So a simple brute force search will be fast enough for a nine-digit answer!</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;bits/stdc++.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> int long long</span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"><span class="type">int</span> t;</span><br><span class="line"><span class="type">int</span> x, k;</span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">num_digits</span><span class="params">(<span class="type">int</span> x)</span> </span>&#123;</span><br><span class="line">	<span class="type">int</span> sum = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">while</span>(x) &#123;</span><br><span class="line">		sum += x%<span class="number">10</span>;</span><br><span class="line">		x /= <span class="number">10</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> sum;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">solve</span><span class="params">()</span> </span>&#123;</span><br><span class="line">	<span class="type">int</span> ans;</span><br><span class="line">	<span class="keyword">while</span>(<span class="number">1</span>) &#123;</span><br><span class="line">		<span class="keyword">if</span>(<span class="built_in">num_digits</span>(x) % k == <span class="number">0</span>) &#123;</span><br><span class="line">			ans = x;</span><br><span class="line">			<span class="keyword">break</span>;</span><br><span class="line">		&#125;</span><br><span class="line">		++x; </span><br><span class="line">	&#125; </span><br><span class="line">	<span class="keyword">return</span> ans;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="type">signed</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">	cin &gt;&gt; t;</span><br><span class="line">	<span class="keyword">while</span>(t--) &#123;</span><br><span class="line">		cin &gt;&gt; x &gt;&gt; k;</span><br><span class="line">		cout &lt;&lt; <span class="built_in">solve</span>() &lt;&lt; endl;</span><br><span class="line">	&#125;	</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;  <span class="comment">// simple as that</span></span><br></pre></td></tr></table></figure>
+
+<p>That took me 5 mins XD</p>
+<h2 id="Problem-B-Haunted-House-A-pretty-interesting-question"><a href="#Problem-B-Haunted-House-A-pretty-interesting-question" class="headerlink" title="Problem B: Haunted House - A pretty interesting question."></a>Problem B: Haunted House - A pretty interesting question.</h2><p><strong>One key finding:</strong> if ${2^i}$ | x , then denote X as x’s binary expression. X won’t have 1s in the (i-1) lowest positions.</p>
+<p><strong>Second key finding:</strong> if there are more 0 slots in the legit slots, and fewer 1s in the illegal slots (the division line is the ith position), then we can definitely swap to make the number divisible by  ${2^i}$</p>
+<p><strong>Third key finding:</strong> the best swapping strategy is equivalent to move every illegal ‘1’ to the closest legal ‘0’ slot.  </p>
+<p><img src="/2023/10/26/CF%20contest%20solutions%20Rd%20904%20Div%202/1.png" alt="1"></p>
+<p><strong>Implementation:</strong> Noting that the time complexity won’t suffice to calculate it independently for every i, we need to update the answer as we go over every value. </p>
+<p>for i from 0-&gt;n</p>
+<p>#Case1: if we encounter a ‘1’, it means there’s one more 1 to be swapped</p>
+<p>#Case2: if we encounter a ‘0’, it means that the zero can not be legal slot anymore, we need to find a new 0 to fill the ‘1’ initially filled by this ‘0’</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;bits/stdc++.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> int long long</span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"><span class="type">const</span> <span class="type">int</span> mxN = <span class="number">100009</span>;</span><br><span class="line"><span class="type">int</span> t;</span><br><span class="line"><span class="type">bool</span> b[mxN];</span><br><span class="line"><span class="type">int</span> n;</span><br><span class="line"><span class="type">int</span> zeroes[mxN];</span><br><span class="line"><span class="function"><span class="type">signed</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">	cin &gt;&gt; t;</span><br><span class="line">	<span class="keyword">while</span>(t--) &#123;</span><br><span class="line">		cin &gt;&gt; n;</span><br><span class="line">		<span class="type">int</span> cnt0=<span class="number">0</span>, cnt1=<span class="number">0</span>, ans=<span class="number">0</span>, cur0=<span class="number">1</span>;</span><br><span class="line">		<span class="built_in">memset</span>(zeroes, <span class="number">0</span>, <span class="built_in">sizeof</span>(zeroes));</span><br><span class="line">		<span class="keyword">for</span>(<span class="type">int</span> i=<span class="number">1</span>; i&lt;=n; ++i) &#123;</span><br><span class="line">			<span class="type">char</span> x;</span><br><span class="line">			cin &gt;&gt; x;</span><br><span class="line">			b[i] = x-<span class="string">&#x27;0&#x27;</span>;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">for</span>(<span class="type">int</span> i=n; i&gt;=<span class="number">1</span>; --i) &#123;</span><br><span class="line">			<span class="keyword">if</span>(b[i] == <span class="number">0</span>) zeroes[++cnt0] = i; <span class="comment">// positions of all zeroes</span></span><br><span class="line">		&#125; </span><br><span class="line">		<span class="keyword">for</span>(<span class="type">int</span> i=<span class="number">1</span>; i&lt;=n; ++i) &#123;</span><br><span class="line">			<span class="keyword">if</span>(b[n-i+<span class="number">1</span>] == <span class="number">1</span>) &#123;</span><br><span class="line">				ans += n-i-zeroes[cur0]+<span class="number">1</span>; </span><br><span class="line">				++cnt1;</span><br><span class="line">				++cur0;</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="keyword">else</span> &#123;</span><br><span class="line">				ans += n-i + <span class="number">1</span>-zeroes[cur0];</span><br><span class="line">				--cnt0;</span><br><span class="line">				++cur0;</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="keyword">if</span>(cnt0 &lt; cnt1) &#123;</span><br><span class="line">				cout &lt;&lt; <span class="number">-1</span> &lt;&lt; <span class="string">&quot; &quot;</span>; </span><br><span class="line">				<span class="keyword">continue</span>;</span><br><span class="line">			&#125;</span><br><span class="line">			cout &lt;&lt; ans &lt;&lt; <span class="string">&quot; &quot;</span>;</span><br><span class="line">		&#125;</span><br><span class="line">		cout &lt;&lt; endl;</span><br><span class="line">	&#125;	</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125; </span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p> This one took me a lot of time bruh</p>
+<h2 id="Problem-C-Medium-Design"><a href="#Problem-C-Medium-Design" class="headerlink" title="Problem C: Medium Design"></a>Problem C: Medium Design</h2><p>You initially have a series with length n. Each value is 0. Given a set of segments [l, r], choose an arbitrary number of the segments. For each chosen segment, add 1 to every value covered in the segment. Find the maximum value of the (biggest value - smallest value) </p>
+<p><strong>One key finding:</strong> Suppose that the biggest value is the $x^{th}$ value in the series. Then for each segment containing this value, choosing it won’t hurt the best outcome, not choosing it might. </p>
+<p><strong>Second key finding:</strong> Given the first finding, it is intuitive to realize that the first &#x2F; last value will be the minimum in the end. </p>
+<p>Implementation: </p>
+<ol>
+<li>go through all the segments that do not include the first value. Calculate the answer</li>
+<li>go through all the segments that do not include the last value. Calculate the answer.</li>
+<li>Find the max of the ans</li>
+</ol>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">cin &gt;&gt; n &gt;&gt; m;</span><br><span class="line"><span class="function">vector&lt;in&gt; <span class="title">l</span><span class="params">(n)</span>, <span class="title">r</span><span class="params">(n)</span></span>;</span><br><span class="line">vector&lt;pair&lt;<span class="type">int</span>, <span class="type">int</span>&gt;&gt; f;</span><br><span class="line"><span class="keyword">for</span>(<span class="type">int</span> i=<span class="number">0</span>; i&lt;n; ++i) &#123;</span><br><span class="line">    <span class="keyword">if</span> (l[i]!=<span class="number">0</span>) &#123;</span><br><span class="line">        f.<span class="built_in">emplace_back</span>(l[i], <span class="number">1</span>);</span><br><span class="line">        f.<span class="built_in">emplace_back</span>(r[i], <span class="number">-1</span>);  <span class="comment">// construct an increment series</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="type">int</span> ans = <span class="number">0</span>;</span><br><span class="line"><span class="type">int</span> cur = <span class="number">0</span>, lst = <span class="number">0</span>;</span><br><span class="line"><span class="built_in">sort</span>(f.<span class="built_in">begin</span>(), f.<span class="built_in">end</span>());</span><br><span class="line"><span class="keyword">for</span>(<span class="keyword">auto</span>[x, y] : f) &#123;</span><br><span class="line">    <span class="keyword">if</span> (x &gt; lst) &#123;</span><br><span class="line">        ans = <span class="built_in">max</span>(ans, cur);</span><br><span class="line">    &#125;</span><br><span class="line">    cur += y;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">if</span>(m &gt; lst) &#123;</span><br><span class="line">        ans = <span class="built_in">max</span>(ans, cur);</span><br><span class="line">&#125;</span><br><span class="line">f.<span class="built_in">clear</span>();</span><br><span class="line"><span class="comment">// do the same thing for the final element</span></span><br></pre></td></tr></table></figure>
+
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>Ivan Li</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="http://example.com/2023/10/26/CF%20contest%20solutions%20Rd%20904%20Div%202/">http://example.com/2023/10/26/CF%20contest%20solutions%20Rd%20904%20Div%202/</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span></span>
+                    </p>
+                
+                
+                     <p class="copyright-item">
+                         <span>Slogan:</span>
+                         <span>Everyone has their own forest. The lost people are lost, and the meeters will meet again.</span>
+                     </p>
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="../../../../tags/CF/"># CF</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="../../../11/05/Dreamwork%20Cafe%20--%20We%20serve%20love/">Dreamwork Cafe -- We serve love</a>
+            
+            
+            <a class="next" rel="next" href="../../../09/05/Pioneer%20Research%20Camp/">What I did and learnt in my Pioneer Research Camp</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+            </div>
+            <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© Ivan Li | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a>
+
+          
+        <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+<span class="site-uv">
+
+ Total Viewers:
+
+ <i class="busuanzi-value" id="busuanzi_value_site_uv"></i>
+
+</span>&nbsp;
+
+
+
+
+
+<span class="site-pv">
+
+ | Total Reads:
+
+ <i class="busuanzi-value" id="busuanzi_value_site_pv"></i>
+
+</span>
+
+  
+        
+        </span>
+    </div>
+</footer>
+
+    </div>
+</body>
+
+</html>

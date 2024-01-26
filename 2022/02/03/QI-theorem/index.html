@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="Ivan Li">
+
+
+
+
+
+<title>QI Theorem， Quadrangle Inequalities&#39; proof and implementation - Monotonic queue speeding DP | Hexo</title>
+
+
+
+    <link rel="icon" href="../../../../favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="../../../../css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="../../../../js/script.js"></script>
+    
+    <script src="../../../../js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+            <!-- MathJax配置，可通过单美元符号书写行内公式等 -->
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+    "HTML-CSS": {
+        preferredFont: "TeX",
+        availableFonts: ["STIX","TeX"],
+        linebreaks: { automatic:true },
+        EqnChunk: (MathJax.Hub.Browser.isMobile ? 10 : 50)
+    },
+    tex2jax: {
+        inlineMath: [ ["$", "$"], ["\\(","\\)"] ],
+        processEscapes: true,
+        ignoreClass: "tex2jax_ignore|dno",
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+        equationNumbers: { autoNumber: "AMS" },
+        noUndefined: { attributes: { mathcolor: "red", mathbackground: "#FFEEEE", mathsize: "90%" } },
+        Macros: { href: "{}" }
+    },
+    messageStyle: "none"
+    });
+</script>
+<!-- 给MathJax元素添加has-jax class -->
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+<!-- 通过连接CDN加载MathJax的js代码 -->
+<script type="text/javascript" async
+        src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+
+
+        
+    
+
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+    <script>
+        // this function is used to check current theme before page loaded.
+        (() => {
+            const currentTheme = window.localStorage && window.localStorage.getItem('theme') || '';
+            const isDark = currentTheme === 'dark';
+            const pagebody = document.getElementsByTagName('body')[0]
+            if (isDark) {
+                pagebody.classList.add('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Dark"
+            } else {
+                pagebody.classList.remove('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Light"
+            }
+        })();
+    </script>
+
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">Ivan&#39;s Blog</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="../../../../archives">Posts</a>
+                
+                    <a class="menu-item" href="../../../../category">Categories</a>
+                
+                    <a class="menu-item" href="../../../../tag">Tags</a>
+                
+                    <a class="menu-item" href="../../../../about">About</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">Ivan&#39;s Blog</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="../../../../archives">Posts</a>
+                
+                    <a class="menu-item" href="../../../../category">Categories</a>
+                
+                    <a class="menu-item" href="../../../../tag">Tags</a>
+                
+                    <a class="menu-item" href="../../../../about">About</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+            <div class="main">
+                <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    var tocbot_timer;
+    var DEPTH_MAX = 6; // 为 6 时展开所有
+    var tocbot_default_config = {
+        tocSelector: '.tocbot-list',
+        contentSelector: '.post-content',
+        headingSelector: 'h1, h2, h3, h4, h5',
+        orderedList: false,
+        scrollSmooth: true,
+        onClick: extend_click,
+    };
+
+    function extend_click() {
+        clearTimeout(tocbot_timer);
+        tocbot_timer = setTimeout(function() {
+            tocbot.refresh(obj_merge(tocbot_default_config, {
+                hasInnerContainers: true
+            }));
+        }, 420); // 这个值是由 tocbot 源码里定义的 scrollSmoothDuration 得来的
+    }
+
+    document.ready(function() {
+        tocbot.init(obj_merge(tocbot_default_config, {
+            collapseDepth: 1
+        }));
+    });
+
+    function expand_toc() {
+        var b = document.querySelector('.tocbot-toc-expand');
+        var expanded = b.getAttribute('data-expanded');
+        expanded ? b.removeAttribute('data-expanded') : b.setAttribute('data-expanded', true);
+        tocbot.refresh(obj_merge(tocbot_default_config, {
+            collapseDepth: expanded ? 1 : DEPTH_MAX
+        }));
+        b.innerText = expanded ? 'Expand all' : 'Collapse all';
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+    function obj_merge(target, source) {
+        for (var item in source) {
+            if (source.hasOwnProperty(item)) {
+                target[item] = source[item];
+            }
+        }
+        return target;
+    }
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">QI Theorem， Quadrangle Inequalities&#39; proof and implementation - Monotonic queue speeding DP</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">Ivan Li</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">February 3, 2022&nbsp;&nbsp;0:00:00</a>
+                        </span>
+                    
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <h2 id="We’ll-begin-with-a-problem"><a href="#We’ll-begin-with-a-problem" class="headerlink" title="We’ll begin with a problem"></a><strong>We’ll begin with a problem</strong></h2><p>Given n elements $a_1$ ~ $a_n$ of weight $w_i$ ~  $w_n$ , separate them into groups that satisfy two conditions:</p>
+<p>1, elements in every group have consecutive label(1~n)</p>
+<p>2, the minimum cost reaches minimum . Here we define cost as ( $W_{tot}$ - G ) ** 2  for each group, where G is a given constant</p>
+<h3 id="Solution"><a href="#Solution" class="headerlink" title="Solution"></a><strong>Solution</strong></h3><p>The structure of the problem easily navigates us to DP(Dynamic Programming) . We denote <strong>f[i] to be the minimum cost of arranging the first i elements.</strong> </p>
+<p>Hence the recursive equation should look something like this:<br>$$<br>f[i]&#x3D;min_{j\in(1,i-1)}{[f[j]+cost(j,i)]}<br>$$</p>
+<p>An intuitive explanation for this is: we go through all <strong>potential elements that can be the first of the group in which i is arranged</strong>. For instance, if k<del>i are put into the same group, then f[i] can take the value of f[k-1] + cost(k, i), f[k-1] is the cost to arrange 1</del>k-1, and cost(k, i) calculate the additional cost of the new group</p>
+<p>After running some code, we find out that time complexity is an adorable O(n^2).</p>
+<h4 id="Can-we-accelerate-it"><a href="#Can-we-accelerate-it" class="headerlink" title="**Can we accelerate it? **"></a>**Can we accelerate it? **</h4><ul>
+<li>After running the code and see <strong>which value of j is picked for each i (I’ll later call that a ‘best decision’</strong>, we will find out that when i_1 is bigger than i_2, the best decision is also bigger. Then we have a simple optimization： the best decision for the current ith element needn’t be browsed from 1 to i-1. Instead,  the best decision picked for i-1 is the minimum potential for the ith element. <strong>Sad but true, it is a minor acceleration</strong></li>
+<li>Further optimization needs mathematical tools:</li>
+</ul>
+<p><strong>Monotonicity of decision: Improved</strong></p>
+<p>Define F(j,i) &#x3D; f[j-1]+cost(j,i), which means that f[i] &#x3D; min{F[k,i]}, k∈Z+</p>
+<p>If F satisfies:</p>
+<p>when F(j, i) &lt;&#x3D; F(k, i), we will also have F(j, i+1) &lt;&#x3D; F(k, i+1) , where j &gt; k</p>
+<p>in other words, if j is a better decision than k for i , it will still be for i+1</p>
+<p><strong>Then we state that this kind of relationship follows the Improved version monotonicity of decision</strong></p>
+<p><em>A more intuitive explanation for this: If someone is taller than you and is still growing faster than you, then there is no chance for you to be taller than him.</em> </p>
+<h4 id="SO-WHY-IS-IT-IMPROVED"><a href="#SO-WHY-IS-IT-IMPROVED" class="headerlink" title="SO WHY IS IT    IMPROVED?"></a>SO WHY IS IT    <strong>IMPROVED</strong>?</h4><ul>
+<li>The original one only cares about the best decision, in other words, the <strong>outcome</strong></li>
+<li>The improved one cares about all comparisons, in other words, the <strong>process</strong>, so even not the best decisions can also be used to eliminate worse ones</li>
+</ul>
+<p>We first suppose that this problem satisfies the improved version. How should we implement the code?</p>
+<h4 id="Monotonous-Queue"><a href="#Monotonous-Queue" class="headerlink" title="Monotonous Queue"></a><strong>Monotonous Queue</strong></h4><p><img src="data:image/png;base64,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" alt="Monotonic Stack. Monotonic Stack contains the elements… | by Vardhan Vishnu  | Medium"></p>
+<p>If you haven’t learnt about this, google it, it is a pretty data structure!</p>
+<p>Instead of storing numbers like conventional queue, we now store the ‘<strong>good(beware! not best)</strong> decisions that have <strong>potential (most will be abandoned)</strong> uses. We use 3 variables to describe the decision: label, and the range in which this decision can be used </p>
+<ul>
+<li><p>Step1 iterate through i and eliminate the decisions with right bound smaller than i (useless decisions)</p>
+</li>
+<li><p>Step2 take the front of the queue, it is the best decision for the current i</p>
+</li>
+<li><p>Step3 find the first decision that is better than i, and kicked out the ones before that, and add i to the queue</p>
+<ul>
+<li>rationale: i is obviously greater than past decision, so if i is also better, then the worse ones are both smaller and more useless, so long~</li>
+</ul>
+</li>
+<li><p>Step4 Find the range of the new deicion: i</p>
+</li>
+</ul>
+<p>Here is the implementation example: ↓</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span>(<span class="type">int</span> i=<span class="number">1</span>;i&lt;=n;i++)&#123;</span><br><span class="line">    <span class="keyword">while</span>(l&lt;r&amp;&amp;q[l].r&lt;i) l++; <span class="comment">// eliminate useless choices</span></span><br><span class="line">    q[l].l=i+<span class="number">1</span>;</span><br><span class="line">    ll j=q[l].pre,pos=i+<span class="number">1</span>;</span><br><span class="line">    f[i]=(opt)&#123;<span class="built_in">F</span>(j,i),j&#125;;</span><br><span class="line">    <span class="keyword">if</span>(q[l].r&lt;=i) l++;</span><br><span class="line">    <span class="keyword">while</span>(l&lt;r&amp;&amp;<span class="built_in">F</span>(i,q[r<span class="number">-1</span>].l)&lt;=<span class="built_in">F</span>(q[r<span class="number">-1</span>].pre,q[r<span class="number">-1</span>].l)) r--;<span class="comment">//beware of boundary control!</span></span><br><span class="line">    <span class="keyword">if</span>(l&lt;r)&#123;</span><br><span class="line">        pos=<span class="built_in">search</span>(q[r<span class="number">-1</span>],i);<span class="comment">//search:find the spot to place the new choice</span></span><br><span class="line">        q[r<span class="number">-1</span>].r=pos<span class="number">-1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span>(pos&gt;n) <span class="keyword">continue</span>;</span><br><span class="line">    q[r++]=(info)&#123;pos,n,i&#125;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">ll <span class="title">search</span><span class="params">(info x,ll i)</span></span>&#123;</span><br><span class="line">	ll l=x.l,r=x.r,ans=r+<span class="number">1</span>;</span><br><span class="line">	<span class="keyword">while</span>(l&lt;=r)&#123;</span><br><span class="line">		ll mid=(l+r)/<span class="number">2</span>;</span><br><span class="line">		<span class="keyword">if</span>(<span class="built_in">F</span>(i,mid)&lt;=<span class="built_in">F</span>(x.pre,mid)) ans=mid,r=mid<span class="number">-1</span>;<span class="comment">//F is the cost function</span></span><br><span class="line">		<span class="keyword">else</span> l=mid+<span class="number">1</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> ans;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>That’s all for the solution! Now if we trace back a bit, I said that we <strong>SUPPOSED</strong> it followed the improved version of decision monocity.  So does it? Yes! How to prove it? Here is a hint: <strong>quadrangle inequalities</strong>. Google it if you are interested. I’ll explain this in the next post!</p>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>Ivan Li</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="http://example.com/2022/02/03/QI-theorem/">http://example.com/2022/02/03/QI-theorem/</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span></span>
+                    </p>
+                
+                
+                     <p class="copyright-item">
+                         <span>Slogan:</span>
+                         <span>Everyone has their own forest. The lost people are lost, and the meeters will meet again.</span>
+                     </p>
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="../../../../tags/algorithm/"># algorithm</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="../../../03/10/The%20Art%20of%20Optimization/">The Art of Optimization</a>
+            
+            
+            <a class="next" rel="next" href="../../../01/12/Two%20exemplary%20works%20by%20Garcia%20Marques/">Two exemplary works by Garcia Marquez</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+            </div>
+            <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© Ivan Li | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a>
+
+          
+        <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+<span class="site-uv">
+
+ Total Viewers:
+
+ <i class="busuanzi-value" id="busuanzi_value_site_uv"></i>
+
+</span>&nbsp;
+
+
+
+
+
+<span class="site-pv">
+
+ | Total Reads:
+
+ <i class="busuanzi-value" id="busuanzi_value_site_pv"></i>
+
+</span>
+
+  
+        
+        </span>
+    </div>
+</footer>
+
+    </div>
+</body>
+
+</html>

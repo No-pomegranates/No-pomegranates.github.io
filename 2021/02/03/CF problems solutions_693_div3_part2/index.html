@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="Ivan Li">
+
+
+
+
+
+<title>CF problems solutions_693_div3_part2 | Hexo</title>
+
+
+
+    <link rel="icon" href="../../../../favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="../../../../css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="../../../../js/script.js"></script>
+    
+    <script src="../../../../js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+            <!-- MathJax配置，可通过单美元符号书写行内公式等 -->
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+    "HTML-CSS": {
+        preferredFont: "TeX",
+        availableFonts: ["STIX","TeX"],
+        linebreaks: { automatic:true },
+        EqnChunk: (MathJax.Hub.Browser.isMobile ? 10 : 50)
+    },
+    tex2jax: {
+        inlineMath: [ ["$", "$"], ["\\(","\\)"] ],
+        processEscapes: true,
+        ignoreClass: "tex2jax_ignore|dno",
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+        equationNumbers: { autoNumber: "AMS" },
+        noUndefined: { attributes: { mathcolor: "red", mathbackground: "#FFEEEE", mathsize: "90%" } },
+        Macros: { href: "{}" }
+    },
+    messageStyle: "none"
+    });
+</script>
+<!-- 给MathJax元素添加has-jax class -->
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+<!-- 通过连接CDN加载MathJax的js代码 -->
+<script type="text/javascript" async
+        src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+
+
+        
+    
+
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+    <script>
+        // this function is used to check current theme before page loaded.
+        (() => {
+            const currentTheme = window.localStorage && window.localStorage.getItem('theme') || '';
+            const isDark = currentTheme === 'dark';
+            const pagebody = document.getElementsByTagName('body')[0]
+            if (isDark) {
+                pagebody.classList.add('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Dark"
+            } else {
+                pagebody.classList.remove('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Light"
+            }
+        })();
+    </script>
+
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">Ivan&#39;s Blog</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="../../../../archives">Posts</a>
+                
+                    <a class="menu-item" href="../../../../category">Categories</a>
+                
+                    <a class="menu-item" href="../../../../tag">Tags</a>
+                
+                    <a class="menu-item" href="../../../../about">About</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">Ivan&#39;s Blog</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="../../../../archives">Posts</a>
+                
+                    <a class="menu-item" href="../../../../category">Categories</a>
+                
+                    <a class="menu-item" href="../../../../tag">Tags</a>
+                
+                    <a class="menu-item" href="../../../../about">About</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+            <div class="main">
+                <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    var tocbot_timer;
+    var DEPTH_MAX = 6; // 为 6 时展开所有
+    var tocbot_default_config = {
+        tocSelector: '.tocbot-list',
+        contentSelector: '.post-content',
+        headingSelector: 'h1, h2, h3, h4, h5',
+        orderedList: false,
+        scrollSmooth: true,
+        onClick: extend_click,
+    };
+
+    function extend_click() {
+        clearTimeout(tocbot_timer);
+        tocbot_timer = setTimeout(function() {
+            tocbot.refresh(obj_merge(tocbot_default_config, {
+                hasInnerContainers: true
+            }));
+        }, 420); // 这个值是由 tocbot 源码里定义的 scrollSmoothDuration 得来的
+    }
+
+    document.ready(function() {
+        tocbot.init(obj_merge(tocbot_default_config, {
+            collapseDepth: 1
+        }));
+    });
+
+    function expand_toc() {
+        var b = document.querySelector('.tocbot-toc-expand');
+        var expanded = b.getAttribute('data-expanded');
+        expanded ? b.removeAttribute('data-expanded') : b.setAttribute('data-expanded', true);
+        tocbot.refresh(obj_merge(tocbot_default_config, {
+            collapseDepth: expanded ? 1 : DEPTH_MAX
+        }));
+        b.innerText = expanded ? 'Expand all' : 'Collapse all';
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+    function obj_merge(target, source) {
+        for (var item in source) {
+            if (source.hasOwnProperty(item)) {
+                target[item] = source[item];
+            }
+        }
+        return target;
+    }
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">CF problems solutions_693_div3_part2</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">Ivan Li</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">February 3, 2021&nbsp;&nbsp;10:10:32</a>
+                        </span>
+                    
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <h2 id="Let’s-continue"><a href="#Let’s-continue" class="headerlink" title="Let’s continue"></a>Let’s continue</h2><p>-&gt; <a target="_blank" rel="noopener" href="https://codeforces.com/contest/1472">https://codeforces.com/contest/1472</a></p>
+<p><img src="/2021/02/03/CF%20problems%20solutions_693_div3_part2/codeforces.png" alt="codeforces"></p>
+<h3 id="E-Correct-Placement-–-It-tests-your-implementation-precision"><a href="#E-Correct-Placement-–-It-tests-your-implementation-precision" class="headerlink" title="E. Correct Placement – It tests your implementation precision!"></a>E. Correct Placement – It tests your implementation precision!</h3><p>The problem is straightforward: for point(X,Y), find point(A,B), so that A&lt;X &amp;&amp; B&lt;Y or A&lt;Y&amp;&amp;B&lt;X</p>
+<p>Visually, we get:</p>
+<p><img src="/2021/02/03/CF%20problems%20solutions_693_div3_part2/illus1.jpg" alt="illus1"></p>
+<p><strong>Now it’s intuitive to acclerate by sorting the points height-wise or width-wise</strong></p>
+<p><img src="/2021/02/03/CF%20problems%20solutions_693_div3_part2/illus2.jpg" alt="illus2"></p>
+<p>Now, we need to maintain a min_w series, recording the minimum width obtained by the points with height <strong>strictly smaller</strong>(I fall for this!!!) than the current point.</p>
+<p>What about the other situation? When we compare width with height?</p>
+<p>We can use <strong>lower_bound to locate the ranking of the width in the array sorted in height!</strong></p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;bits/stdc++.h&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"><span class="meta">#<span class="keyword">define</span> rep(i, a, b) for(int i=int(a); i&lt;=int(b); ++i)</span></span><br><span class="line"><span class="meta">#<span class="keyword">ifdef</span> DEBUG</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> DBG(x) cout &lt;&lt; #x &lt;&lt; <span class="string">&quot;: &quot;</span> &lt;&lt; x &lt;&lt; endl</span></span><br><span class="line"><span class="meta">#<span class="keyword">else</span> </span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> DBG(x) </span></span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> mxN 200009</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> int long long</span></span><br><span class="line"><span class="keyword">typedef</span> <span class="type">long</span> <span class="type">long</span> ll;</span><br><span class="line">ll t, n, ans[mxN];</span><br><span class="line"><span class="keyword">struct</span> <span class="title class_">person</span> &#123;</span><br><span class="line">	ll w, h, id;</span><br><span class="line">&#125;p[mxN];</span><br><span class="line">ll min_w[mxN], id[mxN], rk[mxN], height[mxN]; </span><br><span class="line"><span class="comment">// min_w means the suffix mean of the p array after it&#x27;s sorted by height, id records the label of the person with suffix minimum width</span></span><br><span class="line"><span class="function"><span class="type">bool</span> <span class="title">cmp</span><span class="params">(<span class="type">const</span> person &amp;a, <span class="type">const</span> person &amp;b)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">return</span> a.h &lt; b.h || (a.h == b.h &amp;&amp; a.w &lt; b.w);</span><br><span class="line">&#125; </span><br><span class="line"><span class="type">int</span> min_temp[mxN], chosen[mxN];</span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">solve</span><span class="params">(<span class="type">int</span> x)</span> </span>&#123;</span><br><span class="line">	<span class="comment">//case 1 both standing or lying</span></span><br><span class="line">	<span class="keyword">if</span>(p[x].w &gt; min_w[x]) ans[p[x].id] = rk[id[x]];</span><br><span class="line">	<span class="keyword">else</span> &#123;</span><br><span class="line">		<span class="type">int</span> v = <span class="built_in">lower_bound</span>(height+<span class="number">1</span>, height+n+<span class="number">1</span>, p[x].w)-height<span class="number">-1</span>;</span><br><span class="line">		<span class="keyword">if</span>(v == <span class="number">0</span>) ans[p[x].id] = <span class="number">-1</span>;	</span><br><span class="line">		<span class="keyword">else</span> <span class="keyword">if</span>(p[x].h &gt; min_temp[v]) ans[p[x].id] = rk[chosen[v]];</span><br><span class="line">		<span class="keyword">else</span> ans[p[x].id] = <span class="number">-1</span>;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">signed</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">	<span class="comment">//file();</span></span><br><span class="line">	ios::<span class="built_in">sync_with_stdio</span>(<span class="number">0</span>);</span><br><span class="line">    cin.<span class="built_in">tie</span>(<span class="number">0</span>);</span><br><span class="line">    cin &gt;&gt; t;</span><br><span class="line">    <span class="keyword">while</span>(t--) &#123;</span><br><span class="line">    	<span class="built_in">memset</span>(min_w, <span class="number">0x3f3f3f3f</span>, <span class="built_in">sizeof</span>(min_w));</span><br><span class="line">    	<span class="built_in">memset</span>(min_temp, <span class="number">0x3f3f3f3f</span>, <span class="built_in">sizeof</span>(min_temp));	   <span class="built_in">memset</span>(rk, <span class="number">0</span>, <span class="built_in">sizeof</span>(rk));</span><br><span class="line">    	cin &gt;&gt; n;</span><br><span class="line">    	<span class="keyword">for</span>(<span class="type">int</span> i=<span class="number">1</span>; i&lt;=n; ++i) &#123;</span><br><span class="line">    		cin &gt;&gt; p[i].h &gt;&gt; p[i].w;</span><br><span class="line">    		p[i].id = i;</span><br><span class="line">    	&#125;</span><br><span class="line">    	<span class="built_in">sort</span>(p+<span class="number">1</span>, p+n+<span class="number">1</span>, cmp); <span class="comment">// sort in height&#x27;s ascending order</span></span><br><span class="line">  		<span class="keyword">for</span>(<span class="type">int</span> i=<span class="number">1</span>; i&lt;=n; ++i) &#123;</span><br><span class="line">  			height[i] = p[i].h;</span><br><span class="line">  			rk[i] = p[i].id; </span><br><span class="line">  			min_temp[i] = min_temp[i<span class="number">-1</span>], chosen[i] = chosen[i<span class="number">-1</span>];</span><br><span class="line">  			<span class="keyword">if</span>(p[i].w &lt; min_temp[i]) min_temp[i] = p[i].w, chosen[i] = i;</span><br><span class="line">  		&#125;</span><br><span class="line">  		<span class="keyword">for</span>(<span class="type">int</span> i=<span class="number">1</span>; i&lt;=n; ++i) &#123;</span><br><span class="line">  			min_w[i] = min_w[i<span class="number">-1</span>], id[i] = id[i<span class="number">-1</span>];</span><br><span class="line">  			<span class="keyword">if</span>(p[i].h &gt; p[i<span class="number">-1</span>].h) &#123;</span><br><span class="line">  				min_w[i] = min_temp[i<span class="number">-1</span>], id[i] = chosen[i<span class="number">-1</span>];</span><br><span class="line">  			&#125;</span><br><span class="line">  		&#125;</span><br><span class="line">      	<span class="keyword">for</span>(<span class="type">int</span> i=<span class="number">1</span>; i&lt;=n; ++i) &#123;</span><br><span class="line">    		<span class="built_in">solve</span>(i);</span><br><span class="line">    	&#125;</span><br><span class="line">    	<span class="keyword">for</span>(<span class="type">int</span> i=<span class="number">1</span>; i&lt;=n; ++i) cout &lt;&lt; ans[i] &lt;&lt; <span class="string">&quot; &quot;</span>;</span><br><span class="line">    	cout &lt;&lt; endl;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>⬆️it is recommended that you implement yourself! Tons of details to take care of!</p>
+<h3 id="F-New-Year’s-Puzzle-–-a-pretty-interesting-yet-concise-algorithm"><a href="#F-New-Year’s-Puzzle-–-a-pretty-interesting-yet-concise-algorithm" class="headerlink" title="F. New Year’s Puzzle – a pretty interesting yet concise algorithm"></a>F. New Year’s Puzzle – a pretty interesting yet concise algorithm</h3><p>The first thought is definitely DP… But It’s quite hard to actually think it through, as dp relies on one core element: <strong>no aftereffect</strong>. However, putting a tile horizontally will influence the next column. </p>
+<p>So now we switch to another perspective: <strong>greedy algorithm?</strong></p>
+<p><em>rationale? greedy and dp are usually always linked with each other XD</em></p>
+<p>we go through some potential scenarios: ↓</p>
+<p><img src="/2021/02/03/CF%20problems%20solutions_693_div3_part2/demo.png" alt="demo"></p>
+<p>we have some observations:</p>
+<ul>
+<li>if two vertical columns are both empty, it is always good to put a vertical tile, </li>
+<li>if one of them is blocked, we have only one option which is to put a horizontal tile</li>
+<li>there are fixed rules when putting horizontal tiles, because once you put one, you have to continually form this ‘z’ shape</li>
+</ul>
+<p>so now we have a general idea: </p>
+<ol>
+<li>fill all vertical columns from the two sides until we encounter a filled tile</li>
+<li>form z shapes until we are faced with another vertical tile option</li>
+<li>break whenever it’s impossible</li>
+</ol>
+<p><img src="/2021/02/03/CF%20problems%20solutions_693_div3_part2/demo2.png" alt="demo2"></p>
+<p>so how do we determine impossibility?</p>
+<p>A nice find: in order to form z shapes, the adjacent filled tiles should be opposite color when painting the board like a chess board, <strong>in other words, A(x,y) B(c,d)  x+y and c+d should be opposite in parity</strong> </p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;bits/stdc++.h&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"><span class="meta">#<span class="keyword">define</span> rep(i, a, b) for(int i=int(a); i&lt;=int(b); ++i)</span></span><br><span class="line"><span class="meta">#<span class="keyword">ifdef</span> DEBUG</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> DBG(x) cout &lt;&lt; #x &lt;&lt; <span class="string">&quot;: &quot;</span> &lt;&lt; x &lt;&lt; endl</span></span><br><span class="line"><span class="meta">#<span class="keyword">else</span> </span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> DBG(x) </span></span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> mxN 200009</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> int long long</span></span><br><span class="line"><span class="keyword">typedef</span> <span class="type">long</span> <span class="type">long</span> ll;</span><br><span class="line"><span class="type">int</span> t, n, cnt, m;</span><br><span class="line"><span class="keyword">struct</span> <span class="title class_">point</span> &#123;</span><br><span class="line">	<span class="type">int</span> x, y;</span><br><span class="line">&#125;block[mxN];</span><br><span class="line"><span class="function"><span class="type">bool</span> <span class="title">cmp</span><span class="params">(<span class="type">const</span> point &amp;a, <span class="type">const</span> point &amp;b)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">return</span> (a.y &lt; b.y || (a.y == b.y &amp;&amp; a.x &lt; b.x));</span><br><span class="line">&#125;</span><br><span class="line"><span class="function">string <span class="title">solve</span><span class="params">()</span> </span>&#123;</span><br><span class="line">	<span class="type">int</span> sum = <span class="number">-3</span>;</span><br><span class="line">	<span class="keyword">if</span>(m == <span class="number">0</span>) <span class="keyword">return</span> <span class="string">&quot;YES&quot;</span>;</span><br><span class="line">	<span class="built_in">sort</span>(block+<span class="number">1</span>, block+m+<span class="number">1</span>, cmp);</span><br><span class="line">	<span class="type">int</span> j;</span><br><span class="line">	<span class="keyword">for</span>(j=m; j&gt;=<span class="number">1</span>; --j) &#123;</span><br><span class="line">		<span class="keyword">if</span>(block[j].y == block[j<span class="number">-1</span>].y) --j;</span><br><span class="line">		<span class="keyword">else</span> <span class="keyword">break</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="type">int</span> st=<span class="number">1</span>;</span><br><span class="line">	<span class="keyword">for</span>(st=<span class="number">1</span>; st &lt;= j; ++st) &#123;</span><br><span class="line">		<span class="keyword">if</span>(block[st].y == block[st+<span class="number">1</span>].y) ++st;</span><br><span class="line">		<span class="keyword">else</span> <span class="keyword">break</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">for</span>(<span class="type">int</span> i=st; i&lt;=j; ++i) &#123;</span><br><span class="line">		<span class="keyword">if</span>(i &lt; j &amp;&amp; block[i].y == block[i+<span class="number">1</span>].y &amp;&amp; sum!=<span class="number">-3</span>) <span class="keyword">return</span> <span class="string">&quot;NO&quot;</span>;</span><br><span class="line">		<span class="keyword">if</span>(sum == <span class="number">-3</span>) sum = block[i].y + block[i].x;</span><br><span class="line">		<span class="keyword">else</span> &#123;</span><br><span class="line">			<span class="keyword">if</span>(((block[i].y + block[i].x) % <span class="number">2</span>) !=  ((sum) % <span class="number">2</span>)) sum = <span class="number">-3</span>;</span><br><span class="line">			<span class="keyword">else</span> <span class="keyword">return</span> <span class="string">&quot;NO&quot;</span>; </span><br><span class="line">		&#125;	</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">return</span> <span class="string">&quot;YES&quot;</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="type">signed</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">	<span class="comment">//file();</span></span><br><span class="line">	ios::<span class="built_in">sync_with_stdio</span>(<span class="number">0</span>);</span><br><span class="line">    cin.<span class="built_in">tie</span>(<span class="number">0</span>);</span><br><span class="line">    cin &gt;&gt; t;</span><br><span class="line">    <span class="keyword">while</span>(t--) &#123;</span><br><span class="line">    	<span class="built_in">memset</span>(block, <span class="number">0</span>, <span class="built_in">sizeof</span>(block));</span><br><span class="line">    	cin &gt;&gt; n &gt;&gt; m;</span><br><span class="line">    	<span class="keyword">for</span>(<span class="type">int</span> i=<span class="number">1</span>; i&lt;=m; ++i) &#123;</span><br><span class="line">    		<span class="type">int</span> a, b;</span><br><span class="line">    		cin &gt;&gt; a &gt;&gt; b;</span><br><span class="line">    		block[i] = (point)&#123;a, b&#125;;</span><br><span class="line">    	&#125;</span><br><span class="line">    	<span class="keyword">if</span>(m % <span class="number">2</span>) &#123; </span><br><span class="line">    		cout &lt;&lt; <span class="string">&quot;NO&quot;</span> &lt;&lt; endl;</span><br><span class="line">    		<span class="keyword">continue</span>;</span><br><span class="line">    	&#125;</span><br><span class="line">    	cout &lt;&lt; <span class="built_in">solve</span>() &lt;&lt; endl;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h3 id="G-Moving-to-the-Capital-–-the-only-challenging-problem"><a href="#G-Moving-to-the-Capital-–-the-only-challenging-problem" class="headerlink" title="G. Moving to the Capital – the only challenging problem"></a>G. Moving to the Capital – the only challenging problem</h3><p>this is a really interesting problem, as it tests your ability to transfer learnt algorithm and fit them in new occasions. </p>
+<ul>
+<li><p>we first run a BFS to calculate minimum distance from the capital. (easy piece of cake)</p>
+</li>
+<li><p>then we form a graph consisting only of edges a -&gt; b when d[a] &lt; d[b]  <em>(the edges that can be travelled infinitely many times)</em></p>
+</li>
+<li><p>we are <strong>ONLY ALLOWED TO MOVE BACKWARDS ONCE</strong>, does this sound familiar?</p>
+</li>
+<li><p>TARJAN algorithm <a target="_blank" rel="noopener" href="https://www.youtube.com/watch?v=wUgWX0nc4NY">https://www.youtube.com/watch?v=wUgWX0nc4NY</a> </p>
+</li>
+<li><p>detailed description in code comments!</p>
+</li>
+</ul>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;bits/stdc++.h&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"><span class="meta">#<span class="keyword">define</span> rep(i, a, b) for(int i=int(a); i&lt;=int(b); ++i)</span></span><br><span class="line"><span class="meta">#<span class="keyword">ifdef</span> DEBUG</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> DBG(x) cout &lt;&lt; #x &lt;&lt; <span class="string">&quot;: &quot;</span> &lt;&lt; x &lt;&lt; endl</span></span><br><span class="line"><span class="meta">#<span class="keyword">else</span> </span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> DBG(x) </span></span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> mxN 200009 </span></span><br><span class="line"><span class="keyword">typedef</span> <span class="type">long</span> <span class="type">long</span> ll;</span><br><span class="line"><span class="type">int</span> n, m;</span><br><span class="line">vector&lt;<span class="type">int</span>&gt; eg[mxN];</span><br><span class="line"><span class="keyword">struct</span> <span class="title class_">edge</span> &#123;</span><br><span class="line">	<span class="type">int</span> to, nxt;</span><br><span class="line">&#125;es[<span class="number">2</span>*mxN];</span><br><span class="line"><span class="type">int</span> d[mxN];</span><br><span class="line"><span class="type">bool</span> vst[mxN];</span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">calc_dist</span><span class="params">()</span> </span>&#123; <span class="comment">// min distance calculation </span></span><br><span class="line">	queue&lt;<span class="type">int</span>&gt; q;</span><br><span class="line">	<span class="built_in">memset</span>(vst, <span class="number">0</span>, <span class="built_in">sizeof</span>(vst));</span><br><span class="line">	<span class="built_in">memset</span>(d, <span class="number">0</span>, <span class="built_in">sizeof</span>(d));</span><br><span class="line">	q.<span class="built_in">push</span>(<span class="number">1</span>); d[<span class="number">1</span>] = <span class="number">0</span>; vst[<span class="number">1</span>] = <span class="number">1</span>;</span><br><span class="line">	<span class="keyword">while</span>(!q.<span class="built_in">empty</span>()) &#123;</span><br><span class="line">		<span class="type">int</span> u = q.<span class="built_in">front</span>();</span><br><span class="line">		q.<span class="built_in">pop</span>();</span><br><span class="line">		<span class="keyword">for</span>(<span class="type">int</span> v : eg[u]) &#123;</span><br><span class="line">			<span class="keyword">if</span>(!vst[v]) d[v] = d[u] + <span class="number">1</span>, vst[v]=<span class="number">1</span>, q.<span class="built_in">push</span>(v);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// similar to tarjan </span></span><br><span class="line"><span class="type">int</span> val[mxN];</span><br><span class="line"><span class="type">bool</span> upd[mxN];</span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">dfs</span><span class="params">(<span class="type">int</span> u)</span> </span>&#123;</span><br><span class="line">	val[u] = d[u];</span><br><span class="line">	upd[u] = <span class="number">1</span>;</span><br><span class="line">	<span class="keyword">for</span>(<span class="type">int</span> v : eg[u]) &#123;</span><br><span class="line">		<span class="keyword">if</span>(!upd[v] &amp;&amp; d[u] &lt; d[v]) &#123; </span><br><span class="line">			<span class="built_in">dfs</span>(v);</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">if</span>(d[u] &lt; d[v]) val[u] = <span class="built_in">min</span>(val[u], val[v]); <span class="comment">// u can reach v legitly</span></span><br><span class="line">		<span class="keyword">else</span> val[u] = <span class="built_in">min</span>(val[u], d[v]); <span class="comment">// u has to use the one chance to reach v</span></span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">solve</span><span class="params">()</span> </span>&#123;</span><br><span class="line">	<span class="built_in">calc_dist</span>();</span><br><span class="line">	<span class="comment">//rep(i, 1, n) DBG(d[i]);</span></span><br><span class="line">	<span class="built_in">memset</span>(val, <span class="number">0</span>, <span class="built_in">sizeof</span>(val));</span><br><span class="line">	<span class="built_in">memset</span>(upd, <span class="number">0</span>, <span class="built_in">sizeof</span>(upd));</span><br><span class="line">	<span class="built_in">dfs</span>(<span class="number">1</span>);</span><br><span class="line">	<span class="keyword">for</span>(<span class="type">int</span> i=<span class="number">1</span>; i&lt;=n; ++i) cout &lt;&lt; val[i] &lt;&lt; <span class="string">&quot; &quot;</span>;</span><br><span class="line">	cout &lt;&lt; endl;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">	<span class="comment">//file();</span></span><br><span class="line">	ios::<span class="built_in">sync_with_stdio</span>(<span class="number">0</span>);</span><br><span class="line">    cin.<span class="built_in">tie</span>(<span class="number">0</span>);</span><br><span class="line">    <span class="type">int</span> t;</span><br><span class="line">    cin &gt;&gt; t;</span><br><span class="line">    <span class="keyword">while</span>(t--) &#123;</span><br><span class="line">    	cin &gt;&gt; n &gt;&gt; m;</span><br><span class="line">    	<span class="keyword">for</span>(<span class="type">int</span> i=<span class="number">1</span>; i&lt;=n; ++i) eg[i].<span class="built_in">clear</span>();</span><br><span class="line">    	<span class="keyword">for</span>(<span class="type">int</span> i=<span class="number">1</span>; i&lt;=m; ++i) &#123;</span><br><span class="line">    		<span class="type">int</span> a, b;</span><br><span class="line">    		cin &gt;&gt; a &gt;&gt; b;</span><br><span class="line">    		eg[a].<span class="built_in">push_back</span>(b);</span><br><span class="line">    	&#125;</span><br><span class="line">    	<span class="built_in">solve</span>();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>That’s all for this update!</p>
+<p>We covered all the problems in CF div3 693 and I’ll catch up with you guys later~</p>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>Ivan Li</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="http://example.com/2021/02/03/CF%20problems%20solutions_693_div3_part2/">http://example.com/2021/02/03/CF%20problems%20solutions_693_div3_part2/</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span></span>
+                    </p>
+                
+                
+                     <p class="copyright-item">
+                         <span>Slogan:</span>
+                         <span>Everyone has their own forest. The lost people are lost, and the meeters will meet again.</span>
+                     </p>
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="../../../../tags/CF/"># CF</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="../../../../2022/01/12/Two%20exemplary%20works%20by%20Garcia%20Marques/">Two exemplary works by Garcia Marquez</a>
+            
+            
+            <a class="next" rel="next" href="../../../01/12/Liza-Hempstock/">Liza Hempstock -- When love crosses time</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+            </div>
+            <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© Ivan Li | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a>
+
+          
+        <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+<span class="site-uv">
+
+ Total Viewers:
+
+ <i class="busuanzi-value" id="busuanzi_value_site_uv"></i>
+
+</span>&nbsp;
+
+
+
+
+
+<span class="site-pv">
+
+ | Total Reads:
+
+ <i class="busuanzi-value" id="busuanzi_value_site_pv"></i>
+
+</span>
+
+  
+        
+        </span>
+    </div>
+</footer>
+
+    </div>
+</body>
+
+</html>
